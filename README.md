@@ -7,13 +7,24 @@ Examples
 Client example
 
     params = {:some => 'parameters'}
-    token = Signature::Token.new(key, secret)
-    request = Signature::Request.new('POST', '/api/thing, params)
+    token = Signature::Token.new('my_key', 'my_secret')
+    request = Signature::Request.new('POST', '/api/thing', params)
     auth_hash = request.sign(token)
+    query_params = params.merge(auth_hash)
     
     HTTParty.post('http://myservice/api/thing', {
-      :query => params.merge(auth_hash)
+      :query => query_params
     })
+
+`query_params` looks like:
+
+    {
+      :some => "parameters",
+      :auth_timestamp => 1273231888,
+      :auth_signature => "28b6bb0f242f71064916fad6ae463fe91f5adc302222dfc02c348ae1941eaf80",
+      :auth_version => "1.0",
+      :auth_key => "my_key"
+    }
 
 Server example (sinatra)
 
