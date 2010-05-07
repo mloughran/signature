@@ -1,8 +1,8 @@
 signature
----------
+=========
 
 Examples
-========
+--------
 
 Client example
 
@@ -35,6 +35,7 @@ Server example (sinatra)
 
     post '/api/thing' do
       request = Authentication::Request.new('POST', env["REQUEST_PATH"], params)
+      # This will raise a Signature::AuthenticationError if request does not authenticate
       token = request.authenticate do |key|
         Signature::Token.new(key, lookup_secret(key))
       end
@@ -43,6 +44,6 @@ Server example (sinatra)
     end
 
 Copyright
-=========
+---------
 
 Copyright (c) 2010 Martyn Loughran. See LICENSE for details.
