@@ -1,5 +1,4 @@
 require 'hmac-sha2'
-require 'base64'
 
 module Signature
   class AuthenticationError < RuntimeError; end
