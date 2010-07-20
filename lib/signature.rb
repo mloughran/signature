@@ -133,7 +133,8 @@ module Signature
       def validate_signature!(token)
         unless @auth_hash["auth_signature"] == signature(token)
           raise AuthenticationError, "Invalid signature: you should have "\
-            "sent HmacSHA256Hex(#{string_to_sign.inspect}, your_secret_key)"
+            "sent HmacSHA256Hex(#{string_to_sign.inspect}, your_secret_key)"\
+            ", but you sent #{@auth_hash["auth_signature"].inspect}"
         end
         return true
       end

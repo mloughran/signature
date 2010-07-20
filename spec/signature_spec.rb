@@ -88,7 +88,7 @@ describe Signature do
       request = Signature::Request.new('POST', '/some/path', @params)
       lambda {
         request.authenticate_by_token!(@token)
-      }.should raise_error('Invalid signature: you should have sent HmacSHA256Hex("POST\n/some/path\nauth_key=key&auth_timestamp=1234&auth_version=1.0&go=here&query=params", your_secret_key)')
+      }.should raise_error('Invalid signature: you should have sent HmacSHA256Hex("POST\n/some/path\nauth_key=key&auth_timestamp=1234&auth_version=1.0&go=here&query=params", your_secret_key), but you sent "asdf"')
     end
 
     it "should raise error if timestamp not available" do
