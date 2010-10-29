@@ -43,6 +43,12 @@ Server example (sinatra)
       # Do whatever you need to do
     end
 
+Developing
+----------
+
+    bundle
+    bundle exec spec spec/*_spec.rb
+
 Copyright
 ---------
 

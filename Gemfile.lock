@@ -1,0 +1,19 @@
+PATH
+  remote: .
+  specs:
+    signature (0.1.1)
+      ruby-hmac
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    rspec (1.2.9)
+    ruby-hmac (0.4.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  rspec (~> 1.2.9)
+  ruby-hmac
+  signature!
