@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    signature (0.1.1)
+    signature (0.1.2)
       ruby-hmac
 
 GEM
