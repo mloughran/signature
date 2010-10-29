@@ -40,7 +40,7 @@ module Signature
       @auth_hash = {
         :auth_version => "1.0",
         :auth_key => token.key,
-        :auth_timestamp => Time.now.to_i
+        :auth_timestamp => Time.now.to_i.to_s
       }
 
       @auth_hash[:auth_signature] = signature(token)

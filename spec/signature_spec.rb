@@ -31,7 +31,7 @@ describe Signature do
       :auth_signature => "da078fcedd72941b6c873caa40d0d6b2000ebfc700cee802b128dd20f72e74e9",
       :auth_version => "1.0",
       :auth_key => "key",
-      :auth_timestamp => 1234
+      :auth_timestamp => '1234'
     }
   end
 
