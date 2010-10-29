@@ -7,13 +7,23 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
-    rspec (1.2.9)
+    diff-lcs (1.1.2)
+    rspec (2.0.1)
+      rspec-core (~> 2.0.1)
+      rspec-expectations (~> 2.0.1)
+      rspec-mocks (~> 2.0.1)
+    rspec-core (2.0.1)
+    rspec-expectations (2.0.1)
+      diff-lcs (>= 1.1.2)
+    rspec-mocks (2.0.1)
+      rspec-core (~> 2.0.1)
+      rspec-expectations (~> 2.0.1)
     ruby-hmac (0.4.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  rspec (~> 1.2.9)
+  rspec (~> 2.0.0)
   ruby-hmac
   signature!

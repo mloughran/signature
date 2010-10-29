@@ -47,7 +47,7 @@ Developing
 ----------
 
     bundle
-    bundle exec spec spec/*_spec.rb
+    bundle exec rspec spec/*_spec.rb
 
 Copyright
 ---------

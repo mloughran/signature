@@ -18,5 +18,5 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency "ruby-hmac"
-  s.add_development_dependency "rspec", "~> 1.2.9"
+  s.add_development_dependency "rspec", "~> 2.0.0"
 end
