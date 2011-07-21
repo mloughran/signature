@@ -34,7 +34,7 @@ Server example (sinatra)
     end
 
     post '/api/thing' do
-      request = Authentication::Request.new('POST', env["REQUEST_PATH"], params)
+      request = Signature::Request.new('POST', env["REQUEST_PATH"], params)
       # This will raise a Signature::AuthenticationError if request does not authenticate
       token = request.authenticate do |key|
         Signature::Token.new(key, lookup_secret(key))
