@@ -8,6 +8,7 @@ Examples
 
 Client example
 
+```ruby
     params = {:some => 'parameters'}
     token = Signature::Token.new('my_key', 'my_secret')
     request = Signature::Request.new('POST', '/api/thing', params)
@@ -17,9 +18,11 @@ Client example
     HTTParty.post('http://myservice/api/thing', {
       :query => query_params
     })
+```
 
 `query_params` looks like:
 
+```ruby
     {
       :some => "parameters",
       :auth_timestamp => 1273231888,
@@ -28,8 +31,10 @@ Client example
       :auth_key => "my_key"
     }
 
+```
 Server example (sinatra)
 
+```ruby
     error Signature::AuthenticationError do |controller|
       error = controller.env["sinatra.error"]
       halt 401, "401 UNAUTHORIZED: #{error.message}\n"
@@ -44,6 +49,7 @@ Server example (sinatra)
 
       # Do whatever you need to do
     end
+```
 
 Pre-requisites
 ------------
