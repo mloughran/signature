@@ -1,4 +1,4 @@
-require 'hmac-sha2'
+require 'openssl'
 
 module Signature
   class AuthenticationError < RuntimeError; end
@@ -90,7 +90,11 @@ module Signature
     private
 
       def signature(token)
-        HMAC::SHA256.hexdigest(token.secret, string_to_sign)
+        OpenSSL::HMAC.hexdigest(digest, token.secret, string_to_sign)
+      end
+
+      def digest
+        OpenSSL::Digest::Digest.new('sha256')
       end
 
       def string_to_sign
