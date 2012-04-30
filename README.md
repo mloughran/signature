@@ -1,6 +1,8 @@
 signature
 =========
 
+[![Build Status](https://secure.travis-ci.org/markburns/signature.png?branch=master)](http://travis-ci.org/markburns/signature)
+
 Examples
 --------
 
@@ -11,7 +13,7 @@ Client example
     request = Signature::Request.new('POST', '/api/thing', params)
     auth_hash = request.sign(token)
     query_params = params.merge(auth_hash)
-    
+
     HTTParty.post('http://myservice/api/thing', {
       :query => query_params
     })
