@@ -45,6 +45,21 @@ Server example (sinatra)
       # Do whatever you need to do
     end
 
+Pre-requisites
+------------
+Tested against these Ruby versions
+  * 1.8.7
+  * 1.9.2
+  * 1.9.3
+  * rbx-18mode
+  * rbx-19mode
+
+However JRuby currently fails with
+java.security.NoSuchAlgorithmException: sha256 MessageDigest not available
+  * jruby-18mode # JRuby in 1.8 mode
+  * jruby-19mode # JRuby in 1.9 mode
+
+
 Developing
 ----------
 
