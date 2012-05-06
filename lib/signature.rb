@@ -90,11 +90,8 @@ module Signature
     private
 
       def signature(token)
+        digest = OpenSSL::Digest::SHA256.new
         OpenSSL::HMAC.hexdigest(digest, token.secret, string_to_sign)
-      end
-
-      def digest
-        OpenSSL::Digest::Digest.new('sha256')
       end
 
       def string_to_sign
