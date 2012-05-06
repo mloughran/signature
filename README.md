@@ -51,23 +51,13 @@ post '/api/thing' do
 end
 ```
 
-Pre-requisites
-------------
-Tested against these Ruby versions
-  * 1.8.7
-  * 1.9.2
-  * 1.9.3
-  * rbx-18mode
-  * rbx-19mode
-  * jruby-18mode # JRuby in 1.8 mode
-  * jruby-19mode # JRuby in 1.9 mode
-
-
 Developing
 ----------
 
     bundle
     bundle exec rspec spec/*_spec.rb
+
+Please see the travis status for a list of rubies tested against
 
 Copyright
 ---------
