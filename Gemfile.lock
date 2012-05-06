@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    signature (0.1.2)
+    signature (0.1.3)
 
 GEM
   remote: http://rubygems.org/
