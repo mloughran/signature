@@ -36,6 +36,9 @@ module Signature
       @path, @query_hash, @auth_hash = path, query_hash, auth_hash
     end
 
+    # Sign the request with the given token, and return the computed
+    # authentication parameters
+    #
     def sign(token)
       @auth_hash = {
         :auth_version => "1.0",
@@ -59,6 +62,13 @@ module Signature
     # computed value
     #
     def authenticate_by_token!(token, timestamp_grace = 600)
+      # Validate that your code has provided a valid token. This does not
+      # raise an AuthenticationError since passing tokens with empty secret is
+      # a code error which should be fixed, not reported to the API's consumer
+      if token.secret.nil? || token.secret.empty?
+        raise "Provided token is missing secret"
+      end
+
       validate_version!
       validate_timestamp!(timestamp_grace)
       validate_signature!(token)
@@ -75,7 +85,7 @@ module Signature
       key = @auth_hash['auth_key']
       raise AuthenticationError, "Authentication key required" unless key
       token = yield key
-      unless token && token.secret
+      unless token
         raise AuthenticationError, "Invalid authentication key"
       end
       authenticate_by_token!(token, timestamp_grace)

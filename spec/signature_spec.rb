@@ -148,6 +148,15 @@ describe Signature do
       }.should raise_error('Version not supported')
     end
 
+    it "should validate that the provided token has a non-empty secret" do
+      token = Signature::Token.new('key', '')
+      request = Signature::Request.new('POST', '/some/path', @params)
+
+      lambda {
+        request.authenticate_by_token!(token)
+      }.should raise_error('Provided token is missing secret')
+    end
+
     describe "when used with optional block" do
       it "should optionally take a block which yields the signature" do
         request = Signature::Request.new('POST', '/some/path', @params)
