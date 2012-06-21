@@ -53,13 +53,17 @@ module Signature
 
     # Authenticates the request with a token
     #
-    # Timestamp check: Unless timestamp_grace is set to nil (which will skip
-    # the timestamp check), an exception will be raised if timestamp is not
-    # supplied or if the timestamp provided is not within timestamp_grace of
-    # the real time (defaults to 10 minutes)
+    # Raises an AuthenticationError if the request is invalid.
+    # AuthenticationError exception messages are designed to be exposed to API
+    # consumers, and should help them correct errors generating signatures
     #
-    # Signature check: Raises an exception if the signature does not match the
-    # computed value
+    # Timestamp: Unless timestamp_grace is set to nil (which allows this check
+    # to be skipped), AuthenticationError will be raised if the timestamp is
+    # missing or further than timestamp_grace period away from the real time
+    # (defaults to 10 minutes)
+    #
+    # Signature: Raises AuthenticationError if the signature does not match
+    # the computed HMAC. The error contains a hint for how to sign.
     #
     def authenticate_by_token!(token, timestamp_grace = 600)
       # Validate that your code has provided a valid token. This does not
@@ -75,13 +79,24 @@ module Signature
       true
     end
 
+    # Authenticate the request with a token, but rather than raising an
+    # exception if the request is invalid, simply returns false
+    #
     def authenticate_by_token(token, timestamp_grace = 600)
       authenticate_by_token!(token, timestamp_grace)
     rescue AuthenticationError
       false
     end
 
-    def authenticate(timestamp_grace = 600, &block)
+    # Authenticate a request
+    #
+    # Takes a block which will be called with the auth_key from the request,
+    # and which should return a Signature::Token (or nil if no token can be
+    # found for the key)
+    #
+    # Raises errors in the same way as authenticate_by_token!
+    #
+    def authenticate(timestamp_grace = 600)
       raise ArgumentError, "Block required" unless block_given?
       key = @auth_hash['auth_key']
       raise AuthenticationError, "Authentication key required" unless key
@@ -93,6 +108,8 @@ module Signature
       return token
     end
 
+    # Expose the authentication parameters for a signed request
+    #
     def auth_hash
       raise "Request not signed" unless @auth_hash && @auth_hash[:auth_signature]
       @auth_hash
