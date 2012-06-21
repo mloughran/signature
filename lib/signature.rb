@@ -99,10 +99,10 @@ module Signature
     def authenticate(timestamp_grace = 600)
       raise ArgumentError, "Block required" unless block_given?
       key = @auth_hash['auth_key']
-      raise AuthenticationError, "Authentication key required" unless key
+      raise AuthenticationError, "Missing parameter: auth_key" unless key
       token = yield key
       unless token
-        raise AuthenticationError, "Invalid authentication key"
+        raise AuthenticationError, "Unknown auth_key"
       end
       authenticate_by_token!(token, timestamp_grace)
       return token

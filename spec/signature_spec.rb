@@ -180,14 +180,14 @@ describe Signature do
         request = Signature::Request.new('POST', '/some/path', @params)
         lambda {
           request.authenticate { |key| nil }
-        }.should raise_error('Authentication key required')
+        }.should raise_error('Missing parameter: auth_key')
       end
 
       it "should raise error if block returns nil (i.e. key doesn't exist)" do
         request = Signature::Request.new('POST', '/some/path', @params)
         lambda {
           request.authenticate { |key| nil }
-        }.should raise_error('Invalid authentication key')
+        }.should raise_error('Unknown auth_key')
       end
 
       it "should raise unless block given" do
