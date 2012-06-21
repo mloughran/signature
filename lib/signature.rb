@@ -110,6 +110,45 @@ module Signature
       return token
     end
 
+    # Authenticate a request asynchronously
+    #
+    # This method is useful it you're running a server inside eventmachine and
+    # need to lookup the token asynchronously.
+    #
+    # The block is passed an auth key and a deferrable which should succeed
+    # with the token, or fail if the token cannot be found
+    #
+    # This method returns a deferrable which succeeds with the valid token, or
+    # fails with an AuthenticationError which can be used to pass the error
+    # back to the user
+    #
+    def authenticate_async(timestamp_grace = 600)
+      raise ArgumentError, "Block required" unless block_given?
+      df = EM::DefaultDeferrable.new
+
+      key = @auth_hash['auth_key']
+
+      unless key
+        df.fail(AuthenticationError.new("Missing parameter: auth_key"))
+        return
+      end
+
+      token_df = yield key
+      token_df.callback { |token|
+        begin
+          authenticate_by_token!(token, timestamp_grace)
+          df.succeed(token)
+        rescue AuthenticationError => e
+          df.fail(e)
+        end
+      }
+      token_df.errback {
+        df.fail(AuthenticationError.new("Unknown auth_key"))
+      }
+    ensure
+      return df
+    end
+
     # Expose the authentication parameters for a signed request
     #
     def auth_hash

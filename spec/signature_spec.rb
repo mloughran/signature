@@ -197,5 +197,67 @@ describe Signature do
         }.should raise_error(ArgumentError, "Block required")
       end
     end
+
+    describe "authenticate_async" do
+      include EM::SpecHelper
+      default_timeout 1
+
+      it "returns a deferrable which succeeds if authentication passes" do
+        request = Signature::Request.new('POST', '/some/path', @params)
+        em {
+          df = EM::DefaultDeferrable.new
+
+          request_df = request.authenticate_async do |key|
+            df
+          end
+
+          df.succeed(@token)
+
+          request_df.callback { |token|
+            token.should == @token
+            done
+          }
+        }
+      end
+
+      it "returns a deferrable which fails if block df fails" do
+        request = Signature::Request.new('POST', '/some/path', @params)
+        em {
+          df = EM::DefaultDeferrable.new
+
+          request_df = request.authenticate_async do |key|
+            df
+          end
+
+          df.fail()
+
+          request_df.errback { |e|
+            e.class.should == Signature::AuthenticationError
+            e.message.should == 'Unknown auth_key'
+            done
+          }
+        }
+      end
+
+      it "returns a deferrable which fails if request does not validate" do
+        request = Signature::Request.new('POST', '/some/path', @params)
+        em {
+          df = EM::DefaultDeferrable.new
+
+          request_df = request.authenticate_async do |key|
+            df
+          end
+
+          token = Signature::Token.new('key', 'wrong_secret')
+          df.succeed(token)
+
+          request_df.errback { |e|
+            e.class.should == Signature::AuthenticationError
+            e.message.should =~ /Invalid signature/
+            done
+          }
+        }
+      end
+    end
   end
 end
