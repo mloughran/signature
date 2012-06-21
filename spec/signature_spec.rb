@@ -10,70 +10,74 @@ describe Signature do
       "query" => "params",
       "go" => "here"
     })
-    @signature = @request.sign(@token)[:auth_signature]
   end
 
-  it "should generate base64 encoded signature from correct key" do
-    @request.send(:string_to_sign).should == "POST\n/some/path\nauth_key=key&auth_timestamp=1234&auth_version=1.0&go=here&query=params"
-    @signature.should == '3b237953a5ba6619875cbb2a2d43e8da9ef5824e8a2c689f6284ac85bc1ea0db'
-  end
+  describe "generating signatures" do
+    before :each do
+      @signature = @request.sign(@token)[:auth_signature]
+    end
 
-  it "should make auth_hash available after request is signed" do
-    request = Signature::Request.new('POST', '/some/path', {
-      "query" => "params"
-    })
-    lambda {
-      request.auth_hash
-    }.should raise_error('Request not signed')
+    it "should generate base64 encoded signature from correct key" do
+      @request.send(:string_to_sign).should == "POST\n/some/path\nauth_key=key&auth_timestamp=1234&auth_version=1.0&go=here&query=params"
+      @signature.should == '3b237953a5ba6619875cbb2a2d43e8da9ef5824e8a2c689f6284ac85bc1ea0db'
+    end
 
-    request.sign(@token)
-    request.auth_hash.should == {
-      :auth_signature => "da078fcedd72941b6c873caa40d0d6b2000ebfc700cee802b128dd20f72e74e9",
-      :auth_version => "1.0",
-      :auth_key => "key",
-      :auth_timestamp => '1234'
-    }
-  end
+    it "should make auth_hash available after request is signed" do
+      request = Signature::Request.new('POST', '/some/path', {
+        "query" => "params"
+      })
+      lambda {
+        request.auth_hash
+      }.should raise_error('Request not signed')
 
-  it "should cope with symbol keys" do
-    @request.query_hash = {
-      :query => "params",
-      :go => "here"
-    }
-    @request.sign(@token)[:auth_signature].should == @signature
-  end
+      request.sign(@token)
+      request.auth_hash.should == {
+        :auth_signature => "da078fcedd72941b6c873caa40d0d6b2000ebfc700cee802b128dd20f72e74e9",
+        :auth_version => "1.0",
+        :auth_key => "key",
+        :auth_timestamp => '1234'
+      }
+    end
 
-  it "should cope with upcase keys (keys are lowercased before signing)" do
-    @request.query_hash = {
-      "Query" => "params",
-      "GO" => "here"
-    }
-    @request.sign(@token)[:auth_signature].should == @signature
-  end
+    it "should cope with symbol keys" do
+      @request.query_hash = {
+        :query => "params",
+        :go => "here"
+      }
+      @request.sign(@token)[:auth_signature].should == @signature
+    end
 
-  it "should use the path to generate signature" do
-    @request.path = '/some/other/path'
-    @request.sign(@token)[:auth_signature].should_not == @signature
-  end
+    it "should cope with upcase keys (keys are lowercased before signing)" do
+      @request.query_hash = {
+        "Query" => "params",
+        "GO" => "here"
+      }
+      @request.sign(@token)[:auth_signature].should == @signature
+    end
 
-  it "should use the query string keys to generate signature" do
-    @request.query_hash = {
-      "other" => "query"
-    }
-    @request.sign(@token)[:auth_signature].should_not == @signature
-  end
+    it "should use the path to generate signature" do
+      @request.path = '/some/other/path'
+      @request.sign(@token)[:auth_signature].should_not == @signature
+    end
 
-  it "should use the query string values to generate signature" do
-    @request.query_hash = {
-      "key" => "notfoo",
-      "other" => 'bar'
-    }
-    @request.sign(@token)[:signature].should_not == @signature
+    it "should use the query string keys to generate signature" do
+      @request.query_hash = {
+        "other" => "query"
+      }
+      @request.sign(@token)[:auth_signature].should_not == @signature
+    end
+
+    it "should use the query string values to generate signature" do
+      @request.query_hash = {
+        "key" => "notfoo",
+        "other" => 'bar'
+      }
+      @request.sign(@token)[:signature].should_not == @signature
+    end
   end
 
   describe "verification" do
     before :each do
-      Time.stub!(:now).and_return(Time.at(1234))
       @request.sign(@token)
       @params = @request.query_hash.merge(@request.auth_hash)
     end
