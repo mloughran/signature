@@ -189,6 +189,13 @@ describe Signature do
           request.authenticate { |key| nil }
         }.should raise_error('Invalid authentication key')
       end
+
+      it "should raise unless block given" do
+        request = Signature::Request.new('POST', '/some/path', @params)
+        lambda {
+          request.authenticate
+        }.should raise_error(ArgumentError, "Block required")
+      end
     end
   end
 end

@@ -82,6 +82,7 @@ module Signature
     end
 
     def authenticate(timestamp_grace = 600, &block)
+      raise ArgumentError, "Block required" unless block_given?
       key = @auth_hash['auth_key']
       raise AuthenticationError, "Authentication key required" unless key
       token = yield key
