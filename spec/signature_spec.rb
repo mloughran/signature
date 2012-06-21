@@ -84,7 +84,7 @@ describe Signature do
   describe "verification" do
     before :each do
       @request.sign(@token)
-      @params = @request.query_hash.merge(@request.auth_hash)
+      @params = @request.signed_params
     end
 
     it "should verify requests" do

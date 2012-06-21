@@ -34,6 +34,7 @@ module Signature
 
       @method = method.upcase
       @path, @query_hash, @auth_hash = path, query_hash, auth_hash
+      @signed = false
     end
 
     # Sign the request with the given token, and return the computed
@@ -45,8 +46,9 @@ module Signature
         :auth_key => token.key,
         :auth_timestamp => Time.now.to_i.to_s
       }
-
       @auth_hash[:auth_signature] = signature(token)
+
+      @signed = true
 
       return @auth_hash
     end
@@ -111,8 +113,14 @@ module Signature
     # Expose the authentication parameters for a signed request
     #
     def auth_hash
-      raise "Request not signed" unless @auth_hash && @auth_hash[:auth_signature]
+      raise "Request not signed" unless @signed
       @auth_hash
+    end
+
+    # Query parameters merged with the computed authentication parameters
+    #
+    def signed_params
+      @query_hash.merge(auth_hash)
     end
 
     private
