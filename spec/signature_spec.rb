@@ -14,24 +14,29 @@ describe Signature do
 
   describe "generating signatures" do
     before :each do
-      @signature = @request.sign(@token)[:auth_signature]
+      @signature = "3b237953a5ba6619875cbb2a2d43e8da9ef5824e8a2c689f6284ac85bc1ea0db"
     end
 
-    it "should generate base64 encoded signature from correct key" do
-      @request.send(:string_to_sign).should == "POST\n/some/path\nauth_key=key&auth_timestamp=1234&auth_version=1.0&go=here&query=params"
-      @signature.should == '3b237953a5ba6619875cbb2a2d43e8da9ef5824e8a2c689f6284ac85bc1ea0db'
+    it "should generate signature correctly" do
+      @request.sign(@token)
+      string = @request.send(:string_to_sign)
+      string.should == "POST\n/some/path\nauth_key=key&auth_timestamp=1234&auth_version=1.0&go=here&query=params"
+
+      digest = OpenSSL::Digest::SHA256.new
+      signature = OpenSSL::HMAC.hexdigest(digest, @token.secret, string)
+      signature.should == @signature
     end
 
     it "should make auth_hash available after request is signed" do
-      request = Signature::Request.new('POST', '/some/path', {
+      @request.query_hash = {
         "query" => "params"
-      })
+      }
       lambda {
-        request.auth_hash
+        @request.auth_hash
       }.should raise_error('Request not signed')
 
-      request.sign(@token)
-      request.auth_hash.should == {
+      @request.sign(@token)
+      @request.auth_hash.should == {
         :auth_signature => "da078fcedd72941b6c873caa40d0d6b2000ebfc700cee802b128dd20f72e74e9",
         :auth_version => "1.0",
         :auth_key => "key",
