@@ -60,6 +60,13 @@ describe Signature do
       @request.sign(@token)[:auth_signature].should == @signature
     end
 
+    it "should generate correct string when query hash contains array" do
+      @request.query_hash = {
+        "things" => ["thing1", "thing2"]
+      }
+      @request.send(:string_to_sign).should == "POST\n/some/path\nthings[]=thing1&things[]=thing2"
+    end
+
     it "should use the path to generate signature" do
       @request.path = '/some/other/path'
       @request.sign(@token)[:auth_signature].should_not == @signature

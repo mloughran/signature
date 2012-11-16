@@ -1,5 +1,7 @@
 require 'openssl'
 
+require 'signature/query_encoder'
+
 module Signature
   class AuthenticationError < RuntimeError; end
 
@@ -17,6 +19,8 @@ module Signature
 
   class Request
     attr_accessor :path, :query_hash
+
+    include QueryEncoder
 
     # http://www.w3.org/TR/NOTE-datetime
     ISO8601 = "%Y-%m-%dT%H:%M:%SZ"
@@ -182,7 +186,7 @@ module Signature
         # Exclude signature from signature generation!
         hash.delete("auth_signature")
 
-        hash.keys.sort.map { |k| "#{k}=#{hash[k]}" }.join("&")
+        hash.sort.map { |k, v| QueryEncoder.encode_param(k, v) }.join('&')
       end
 
       def validate_version!
