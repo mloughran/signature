@@ -12,6 +12,15 @@ module Signature
         end
       end
       
+      # Like encode_param, but doesn't url escape keys or values
+      def encode_param_without_escaping(k, v)
+        if v.is_a?(Array)
+          v.map { |e| k + "[]=" + e }.join("&")
+        else
+          k + "=" + v
+        end
+      end
+
       private
 
       def escape(s)

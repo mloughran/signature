@@ -186,7 +186,9 @@ module Signature
         # Exclude signature from signature generation!
         hash.delete("auth_signature")
 
-        hash.sort.map { |k, v| QueryEncoder.encode_param(k, v) }.join('&')
+        hash.sort.map do |k, v|
+          QueryEncoder.encode_param_without_escaping(k, v)
+        end.join('&')
       end
 
       def validate_version!

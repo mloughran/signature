@@ -67,6 +67,14 @@ describe Signature do
       @request.send(:string_to_sign).should == "POST\n/some/path\nthings[]=thing1&things[]=thing2"
     end
 
+    # This may well change in auth version 2
+    it "should not escape keys or values in the query string" do
+      @request.query_hash = {
+        "key;" => "value@"
+      }
+      @request.send(:string_to_sign).should == "POST\n/some/path\nkey;=value@"
+    end
+
     it "should use the path to generate signature" do
       @request.path = '/some/other/path'
       @request.sign(@token)[:auth_signature].should_not == @signature
