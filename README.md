@@ -16,7 +16,7 @@ auth_hash    = request.sign(token)
 query_params = params.merge(auth_hash)
 
 HTTParty.post('http://myservice/api/thing', {
-  :query => query_params
+  :body => query_params
 })
 ```
 
