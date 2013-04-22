@@ -4,7 +4,7 @@ PATH
     signature (0.1.6)
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     bacon (1.1.0)
     diff-lcs (1.1.3)
