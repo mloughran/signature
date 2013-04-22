@@ -75,6 +75,13 @@ describe Signature do
       @request.send(:string_to_sign).should == "POST\n/some/path\nkey;=value@"
     end
 
+    it "should cope with requests where the value is nil (antiregression)" do
+      @request.query_hash = {
+        "key" => nil
+      }
+      @request.send(:string_to_sign).should == "POST\n/some/path\nkey="
+    end
+
     it "should use the path to generate signature" do
       @request.path = '/some/other/path'
       @request.sign(@token)[:auth_signature].should_not == @signature

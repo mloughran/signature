@@ -17,7 +17,7 @@ module Signature
         if v.is_a?(Array)
           v.map { |e| k + "[]=" + e }.join("&")
         else
-          k + "=" + v
+          "#{k}=#{v}"
         end
       end
 
