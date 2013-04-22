@@ -18,6 +18,6 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency "jruby-openssl" if defined?(JRUBY_VERSION)
-  s.add_development_dependency "rspec", "~> 2.9.0"
+  s.add_development_dependency "rspec"
   s.add_development_dependency "em-spec"
 end
