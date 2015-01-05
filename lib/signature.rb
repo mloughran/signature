@@ -213,12 +213,18 @@ module Signature
       end
 
       def validate_signature!(token)
-        unless @auth_hash["auth_signature"] == signature(token)
+        unless identical? @auth_hash["auth_signature"], signature(token)
           raise AuthenticationError, "Invalid signature: you should have "\
             "sent HmacSHA256Hex(#{string_to_sign.inspect}, your_secret_key)"\
             ", but you sent #{@auth_hash["auth_signature"].inspect}"
         end
         return true
+      end
+
+      # Constant time string comparison
+      def identical?(a, b)
+        return false unless a.bytesize == b.bytesize
+        a.bytes.zip(b.bytes).reduce(0) { |memo, (a, b)| memo += a ^ b } == 0
       end
   end
 end
