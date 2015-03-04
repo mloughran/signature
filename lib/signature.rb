@@ -223,6 +223,8 @@ module Signature
 
       # Constant time string comparison
       def identical?(a, b)
+        return true if a.nil? && b.nil?
+        return false if a.nil? || b.nil?
         return false unless a.bytesize == b.bytesize
         a.bytes.zip(b.bytes).reduce(0) { |memo, (a, b)| memo += a ^ b } == 0
       end
