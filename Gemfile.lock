@@ -13,7 +13,7 @@ GEM
       eventmachine
       rspec (> 2.6.0)
       test-unit
-    eventmachine (1.0.3)
+    eventmachine (1.0.7)
     rspec (2.13.0)
       rspec-core (~> 2.13.0)
       rspec-expectations (~> 2.13.0)
